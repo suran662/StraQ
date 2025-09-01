@@ -120,7 +120,7 @@ class SFTTrainer(ABC):
 
             for current_input_ids, current_attention_masks, next_input_ids, next_attention_masks, current_strategies, rewards in self.train_dataloader:
                 if args.is_dailydialogue:
-                    all_strategies = torch.tensor([self.tokenizer.convert_tokens_to_ids([str(i) for i in range(1, 90)])] * rewards.shape[0]).to(torch.cuda.current_device())
+                    all_strategies = torch.tensor([self.tokenizer.convert_tokens_to_ids(['A', 'B', 'C', 'D'])] * rewards.shape[0]).to(torch.cuda.current_device())
                 else:
                     all_strategies = torch.tensor([self.tokenizer.convert_tokens_to_ids(['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H'])] * rewards.shape[0]).to(torch.cuda.current_device())
                 # print(f"all_strategies:{all_strategies}")
@@ -139,7 +139,7 @@ class SFTTrainer(ABC):
                 logits = output.logits # (batch_size, seq_len, vocab_size)
                 last_valid_index = current_attention_masks.sum(dim=1) - 1  # (batch_size,)
                 batch_indices = torch.arange(current_input_ids.shape[0], device=current_input_ids.device)  # (batch_size,)
-                last_logits = logits[batch_indices, -1, :]  # (batch_size, vocab_size)
+                last_logits = logits[batch_indices, last_valid_index, :]  # (batch_size, vocab_size)
                 # print(last_logits.shape, current_strategies.squeeze())
                 # gpt_loss = F.cross_entropy(last_logits, current_strategies.squeeze())
                 probs = F.softmax(last_logits, dim=-1)  # (batch_size, vocab_size)
@@ -166,10 +166,10 @@ class SFTTrainer(ABC):
                 
                 if args.learn_from_org: 
                     pass
-                 #  TODO
+                 #  TODO Your Reward Function
                 else: 
                     pass
-                #  TODO
+                #  TODO Your Reward Function
                 self.strategy.print(f"q_targets:{q_targets}")
                 
                 gpt_loss = torch.nn.functional.mse_loss(q_current.squeeze(1), q_targets)
