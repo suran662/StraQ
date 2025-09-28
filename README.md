@@ -1,6 +1,6 @@
 # StraQ*
 
-This repository contains the high-level code for the StraQ* project. 
+This repository contains the code for the StraQ* project. 
 
 - The `cli/` directory contains command-line tools for training and interacting with models.
 - The `models/` and `Trainer/` directories provide model definitions and training logic.
@@ -8,5 +8,6 @@ This repository contains the high-level code for the StraQ* project.
 - The `utils/` directory includes utility scripts for distributed training, logging, and more.
 
 Feel free to explore the codebase and contribute!
+
 
 
